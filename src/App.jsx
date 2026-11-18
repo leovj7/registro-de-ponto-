@@ -8,12 +8,11 @@ function AreaPonto({ historico, setHistorico }) {
   const [carregando, setCarregando] = useState(false)
 
   const funcionariosBaixa = ["Andreia", "João Vitor", "Danilo", "Matheus", "Izabelle", "Maria"]
-  const funcionariosRibeiro = [,"Kimilly", "Maria jesus", "Vinicius"]
+  const funcionariosRibeiro = ["Kimilly", "Maria jesus", "Vinicius"]
 
   const listaAtual = unidade === "Baixa Grande do Ribeiro" ? funcionariosBaixa : funcionariosRibeiro
 
   // 📍 1. COORDENADAS GEOGRÁFICAS DAS SUAS LOJAS
-  // IMPORTANTE: Substitua os números abaixo pelas coordenadas exatas do Google Maps quando puder
   const COORDENADAS_LOJAS = {
     "Baixa Grande do Ribeiro": { lat: -7.860946383635714, lng: -45.209921660385916 }, 
     "Ribeiro Gonçalves": { lat: -7.5568, lng: -45.2443 }       
@@ -36,6 +35,7 @@ function AreaPonto({ historico, setHistorico }) {
   }
 
   // 🌐 3. FUNÇÃO DE ENVIO PARA O SHEETDB
+  // IMPORTANTE: Se você criou uma nova API no SheetDB, troque o link abaixo pelo novo!
   const enviarParaPlanilha = async (dadosPonto) => {
     setCarregando(true)
     try {
@@ -61,18 +61,7 @@ function AreaPonto({ historico, setHistorico }) {
 
     if (!navigator.geolocation) {
       return alert("Seu navegador ou celular não suporta geolocalização.")
-      const enviarParaPlanilha = async (novoRegistro) => {
-  await fetch('https://sheetdb.io/api/v1/SUA_NOVA_CHAVE', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    // O objeto novoRegistro já tem { id, nome, tipo, horario, unidade }
-    body: JSON.stringify({ data: novoRegistro })
-  });
-};
-    
+    }
 
     setCarregando(true) // Ativa o estado de carregamento enquanto busca o GPS
 
@@ -99,21 +88,21 @@ function AreaPonto({ historico, setHistorico }) {
         }
 
         const agora = new Date()
-const novoRegistro = {
-  nome: funcionario,
-  tipo: tipo,
-  unidade: unidade,
-  horario: agora.toLocaleTimeString("pt-BR"),
-  data: agora.toLocaleDateString("pt-BR"),
-  validado: "Pendente",
-  observacao: `GPS OK (${Math.round(distancia)}m da loja)`
-}
+        const novoRegistro = {
+          nome: funcionario,
+          tipo: tipo,
+          unidade: unidade,
+          horario: agora.toLocaleTimeString("pt-BR"),
+          data: agora.toLocaleDateString("pt-BR"),
+          validado: "Pendente",
+          observacao: `GPS OK (${Math.round(distancia)}m da loja)`
+        }
 
         // Executa as ações de gravação e atualização
         enviarParaPlanilha(novoRegistro)
         setHistorico([novoRegistro, ...historico])
         
-        alert(`Sucesso! ${tipo} de ${funcionario} registrada.`);
+        alert(`Sucesso! ${tipo} de ${funcionario} registrada.`)
         setFuncionario("") // Limpa o seletor para evitar erros do próximo funcionário
       },
       (error) => {
@@ -152,6 +141,7 @@ const novoRegistro = {
     </div>
   )
 }
+
 // --- COMPONENTE ADMIN (DASHBOARD) ---
 function AreaAdmin({ historico }) {
   return (
